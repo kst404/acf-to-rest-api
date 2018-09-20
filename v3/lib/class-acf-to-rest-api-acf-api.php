@@ -83,19 +83,21 @@ if ( ! class_exists( 'ACF_To_REST_API_ACF_API' ) ) {
 				if ( $field ) {
 					$data[ $field ] = get_field( $field, $this->id );
 				} else {
-					$only_fields = apply_filters( 'acf/rest_api/' . $this->type . '/only_fields', array() );
-					if(count($only_fields) > 0) {
+					$only_fields = apply_filters( 'acf/rest_api/' . $this->type . '/only_fields', false );
+					if($only_fields !== false && is_array($only_fields)) {
+						$fields = array();
 						foreach ($only_fields as $field_name) {
 							$fields[$field_name] = get_field($field_name, $this->id);
 						}
 					} else {
 						$fields = get_fields( $this->id );
+
+						if ( ! $fields ) {
+							$this->get_field_objects( $this->id );
+							$fields = $this->get_fields_fallback();
+						}
 					}
 
-					if ( ! $fields ) {
-						$this->get_field_objects( $this->id );
-						$fields = $this->get_fields_fallback();
-					}
 					$data['acf'] = $fields;
 				}
 
