@@ -74,7 +74,7 @@ if ( ! class_exists( 'ACF_To_REST_API_ACF_API' ) ) {
 		public function get_fields( $request ) {
 			$data  = array();
 			$field = null;
-			
+
 			if ( $request instanceof WP_REST_Request ) {
 				$field = $request->get_param( 'field' );
 			}
@@ -83,7 +83,15 @@ if ( ! class_exists( 'ACF_To_REST_API_ACF_API' ) ) {
 				if ( $field ) {
 					$data[ $field ] = get_field( $field, $this->id );
 				} else {
-					$fields = get_fields( $this->id );
+					$only_fields = apply_filters( 'acf/rest_api/' . $this->type . '/only_fields', array() );
+					if(count($only_fields) > 0) {
+						foreach ($only_fields as $field_name) {
+							$fields[$field_name] = get_field($field_name, $this->id);
+						}
+					} else {
+						$fields = get_fields( $this->id );
+					}
+
 					if ( ! $fields ) {
 						$this->get_field_objects( $this->id );
 						$fields = $this->get_fields_fallback();
