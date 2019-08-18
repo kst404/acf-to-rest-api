@@ -16,7 +16,7 @@ if ( ! class_exists( 'ACF_To_REST_API' ) ) {
 
 	class ACF_To_REST_API {
 
-		const VERSION = '3.1.0';
+		const VERSION = '3.1.1';
 
 		private static $old_request_version     = 2;
 		private static $default_request_version = 3;
